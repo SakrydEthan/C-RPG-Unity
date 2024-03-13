@@ -1,0 +1,218 @@
+using System.Collections;
+using System.Collections.Generic;
+using Assets.Scripts;
+using Assets.Scripts.Items;
+using Assets.Scripts.Character;
+using Assets.Scripts.UI;
+using UnityEngine;
+using UnityEngine.AI;
+using Assets.Scripts.Saving;
+using Assets.Scripts.Combat;
+
+public class BaseCharacter : MonoBehaviour, IInteractive, ISaveable, ICombatant
+{
+    public bool isAlive = true;
+    public string id;
+    public string charName;
+    public List<Item> items;
+
+    public Quest[] quests;
+    //public DialogOption[] startingDialog;
+    public CharacterDialog dialog;
+    public AttributesController attributes;
+    public NavMeshAgent agent;
+
+    public HealthCharacter health;
+    public float attackRange = 2f;
+    public Transform target;
+    public Weapon weapon;
+    public GameObject weaponGO;
+    protected ItemWeapon itemWeapon;
+    public Transform rightHand;
+    public Transform leftHand;
+
+    public Animator animator;
+
+    protected bool isUnchanged = true;
+
+    public int level = 1;
+    public int killExp = 10;
+
+    public CharacterPreset preset;
+
+    public bool isAttacking = false;
+
+
+
+    // Start is called before the first frame update
+    void Start()
+    {
+        StartBehavior();
+    }
+
+    public virtual void StartBehavior()
+    {
+        health = GetComponent<HealthCharacter>();
+        if (preset) SetPreset();
+        Load();
+    }
+
+
+    public string GetInteractText()
+    {
+        if (!isAlive) return "Loot " + charName;
+        return "Talk to " + charName;
+    }
+
+    public virtual void Interact()
+    {
+        if(!isAlive)
+        {
+            //open their inventory
+            UILoot.LootCharacter(this);
+            return;
+        }
+
+        //start conversation if char is alive and friendly
+        Debug.Log("player interacted with " + charName);
+        //UIController.instance.OpenDialog(startingDialog[0]);
+        UIDialog.instance.StartDialog(this);
+
+        //nothing if char is aggressive and player not sneaking
+
+
+        //open inventory if player is sneaking (pickpocket)
+
+
+        //if(Player.IsSneaking()) open inventory
+    }
+
+    public virtual void Load()
+    {
+        //BaseCharacterSave save = (BaseCharacterSave)ES3.Load(id, Application.dataPath + SaveController.instance.saveName);
+
+        BaseCharacterSave load = (BaseCharacterSave)SavePersistenceController.GetSaveObjectByID(id);
+        if(load == null) load = (BaseCharacterSave)SaveController.GetSaveObjectByID(id);
+        if (load == null) return;
+        if (!load.IsAlive)
+        {
+            Destroy(gameObject);
+            return;
+        }
+
+        health.health = load.Health;
+    }
+
+    public virtual void Save()
+    {
+        if (isUnchanged) return;
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        
+    }
+
+    public virtual void UpdateBehavior()
+    { }
+
+    //exp awarded for killing this character
+    public virtual void GetKillExp()
+    {
+        PlayerLevelController.instance.AddExp(AttributesCalculator.GetExperienceByLevel(level));
+    }
+
+    public virtual void GetStaggered()
+    {
+        animator.SetTrigger("stagger");
+        agent.velocity = Vector3.zero;
+        agent.isStopped = true;
+    }
+
+    public virtual void GetBlocked()
+    {
+        animator.SetTrigger("blocked");
+        Debug.Log(charName + "'s attack was blocked");
+    }
+
+
+    public virtual void GetKilled()
+    {
+        if(!isAlive) return;
+        animator.SetTrigger("death");
+        agent.isStopped = true;
+        isAlive = false;
+        GetKillExp();
+
+        Debug.Log(charName + " was killed");
+        BaseCharacterSave save = new BaseCharacterSave(id, false);
+        SavePersistenceController.instance.AddSaveObject(save);
+    }
+
+    public virtual void EquipWeapon(ItemWeapon _weapon)
+    {
+        itemWeapon = _weapon;
+        //if (weaponGO != null) Destroy(weaponGO);
+        //Debug.Log("Player equipped weapon: " + _weapon.itemName);
+        //damage = attributes.GetWeaponDamage(_weapon);
+
+        if (_weapon.isRightHanded) weaponGO = Instantiate(_weapon.model, rightHand);
+        if (!_weapon.isRightHanded) weaponGO = Instantiate(_weapon.model, leftHand);
+        weaponGO.transform.localPosition = _weapon.offset*100f;
+        //weaponGO.transform.localRotation.SetEulerRotation(-90f, 0f, 0f);
+        weaponGO.transform.Rotate(_weapon.rotation, Space.Self);
+        weaponGO.transform.localScale = Vector3.one * 100f;
+
+        if (weaponGO.GetComponent<Weapon>() == null)
+        {
+            Weapon _wep = weaponGO.AddComponent<Weapon>();
+            _wep.SetItemWeapon(_weapon);
+            weapon = _wep;
+            weapon.damage = attributes.GetWeaponDamage(_weapon);
+        }
+        else
+        {
+            weapon = weaponGO.GetComponent<Weapon>();
+            weapon.damage = attributes.GetWeaponDamage(_weapon);
+        }
+    }
+
+    public virtual void SetPreset()
+    {
+        if (preset == null) return;
+
+        for (int i = 0; i < preset.skills.Length; i++)
+        {
+            if (attributes != null) attributes.SetSkill((Skill)i, preset.skills[i]);
+
+        }
+
+        if (weapon == null) EquipWeapon(preset.GetWeapon());
+
+        for (int i = 0; i < preset.resistances.Length; i++)
+        {
+            health.resistance[i] = preset.resistances[i];
+        }
+    }
+
+
+    public virtual void AttackStart()
+    {
+        agent.isStopped = true;
+        isAttacking = true;
+        weapon.StartAttack();
+    }
+
+    public virtual void AttackEnd()
+    {
+        agent.isStopped = false;
+        isAttacking = false;
+        weapon.StartAttack();
+    }
+
+    public virtual void ShootProjectile()
+    {
+        weapon.ShootWeapon();
+    }
+}
