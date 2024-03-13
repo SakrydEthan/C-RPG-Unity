@@ -1,0 +1,38 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class AttributesController : MonoBehaviour
+{
+    [SerializeField] protected int[] skills = new int[4];
+
+    public virtual int GetWeaponSkill(Skill skill)
+    {
+        return skills[(int)skill];
+    }
+
+    public virtual int[] GetWeaponSkills()
+    {
+        return skills;
+    }
+
+    public virtual void SetSkill(Skill skill, int level)
+    {
+        skills[(int)skill] = level;
+    }
+
+    public virtual float GetDamageMultiplier(Skill skill)
+    {
+        return AttributesCalculator.CalculateDamageMultiplier(skills[(int)skill]);
+    }
+
+    public virtual float GetDamageMultiplier(ItemWeapon weapon)
+    {
+        return AttributesCalculator.CalculateDamageMultiplier(skills[(int)weapon.skill]);
+    }
+
+    public virtual float GetWeaponDamage(ItemWeapon weapon)
+    {
+        return weapon.damage * GetDamageMultiplier(weapon);
+    }
+}
