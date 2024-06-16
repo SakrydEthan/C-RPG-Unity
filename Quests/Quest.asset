@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bfb74199b2d0a428a9f57b94e71fb204, type: 3}
+  m_Name: Quest
+  m_EditorClassIdentifier: 
+  id: 0
+  killObjectives:
+  - isCompleted: 0
+    targetID: 
+  acceptText: Excellent, come back as soon as you complete it.
+  declineText: Ok, come back when you're ready then.
