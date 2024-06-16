@@ -16,7 +16,9 @@ public class EnemyArcher : Enemy
 
     public override void StartBehavior()
     {
+        Debug.Log("enemy archer start behavior");
         base.StartBehavior();
+        //target = PlayerInstanceController.instance.transform;
         if(itemWeapon is ItemRanged)
         {
             projSpeed = ((ItemRanged)itemWeapon).projectileSpeed;
@@ -26,8 +28,6 @@ public class EnemyArcher : Enemy
     // Update is called once per frame
     void Update()
     {
-        Vector3 lookAt = LeadTargetPos(target);
-        Debug.DrawLine(weapon.transform.position, lookAt, Color.red, 1f);
         UpdateBehavior();
     }
 
@@ -65,6 +65,9 @@ public class EnemyArcher : Enemy
             transform.LookAt(GetLookAt(target.position));
             //agent.enabled = false;
         }
+
+        //Vector3 lead = LeadTargetPos(target);
+        //Debug.DrawLine(weapon.transform.position, lead, Color.red, 1f);
     }
 
     public override void ShootProjectile()

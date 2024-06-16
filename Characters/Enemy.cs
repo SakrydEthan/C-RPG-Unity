@@ -7,7 +7,6 @@ using UnityEngine.AI;
 public class Enemy : BaseCharacter
 {
     public EnemyCamp camp;
-    public bool isAwake = false;
     public Vector3 startPos = Vector3.zero;
 
     Vector3 attackPos = Vector3.zero;
@@ -21,6 +20,7 @@ public class Enemy : BaseCharacter
 
     public override void StartBehavior()
     {
+        Debug.Log("enemy start behavior");
         animator = GetComponent<Animator>();
         agent = GetComponent<NavMeshAgent>();
         attributes = GetComponent<AttributesController>();
@@ -30,13 +30,15 @@ public class Enemy : BaseCharacter
 
 
         GameObject player = GameObject.FindGameObjectWithTag("Player");
-        if (player != null) target = player.transform;
+        //if (player != null) target = player.transform;
 
         startPos = transform.position;
         Load();
 
 
         SetPreset();
+
+        //gameObject.SetActive(false);
     }
 
     // Update is called once per frame
@@ -146,5 +148,13 @@ public class Enemy : BaseCharacter
     {
         Vector3 lookpos = new Vector3(pos.x, transform.position.y, pos.z);
         return lookpos;
+    }
+
+    /// <summary>
+    /// Set an enemy to active when near player
+    /// </summary>
+    public void ActivateEnemy()
+    {
+
     }
 }

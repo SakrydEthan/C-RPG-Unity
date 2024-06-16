@@ -26,6 +26,14 @@ public class Merchant : BaseCharacter
         
     }
 
+    //Called by DialogSystem so player can shop
+    public void OpenMerchantShop()
+    {
+        UIController.OpenShop();
+        PlayerInstanceController.FreezePlayer();
+        PlayerInstanceController.StartShopping();
+    }
+
     public void SellItem(Item item)
     {
         //Debug.Log("trying to sell: " + item.itemName);
@@ -60,12 +68,17 @@ public class Merchant : BaseCharacter
         SavePersistenceController.instance.AddSaveObject(save);
     }
 
+    //Should open dialog system conversation by default,
+    //stealing menu if sneaking,
+    //and loot menu if dead
     public override void Interact()
     {
         UIShop.instance.merchant = this;
         UIDialog.instance.character = this;
         //Debug.Log("player interacted with " + charName);
-        UIDialog.instance.StartDialog(this);
+        //UIDialog.instance.StartDialog(this);
+        GetComponent<PixelCrushers.DialogueSystem.DialogueSystemTrigger>().OnUse();
+        PlayerInstanceController.FreezePlayer();
     }
 
     public override void Save()

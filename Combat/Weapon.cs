@@ -12,7 +12,8 @@ public class Weapon : MonoBehaviour
     public bool isAttacking = false;
     public bool isBlocking = false;
     public PlayerCombatController player;
-    Faction faction;
+    protected Faction faction;
+    public Transform attacker;
 
     public GameObject projectile;
 
@@ -20,19 +21,28 @@ public class Weapon : MonoBehaviour
     public AudioClip hitSound;
 
     public float damage;
-    [SerializeField] bool hasHit = false;
+    [SerializeField] protected bool hasHit = false;
 
-    DamageType type;
+    protected DamageType type;
+    protected bool isAI = true;
 
     //set linesegments to archery skill
     public int lineSegments = 63;
     public LineRenderer lineRenderer;
+    [SerializeField] protected AttributesController attributes;
 
-    // Start is called before the first frame update
+
     void Start()
     {
         if(health == null) health = GetComponentInParent<Health>();
-        if (character == null) character = GetComponentInParent<BaseCharacter>();
+        //if (character == null) character = GetComponentInParent<BaseCharacter>();
+
+        if ((character = GetComponentInParent<BaseCharacter>()) == null)
+        {
+            isAI = false;
+            player = GetComponentInParent<PlayerCombatController>();
+        }
+
         if (GetComponent<Collider>())
         {
             Collider collider = GetComponent<Collider>();
@@ -43,6 +53,7 @@ public class Weapon : MonoBehaviour
         source.clip = hitSound;
         faction = health.faction;
         lineRenderer = gameObject.AddComponent<LineRenderer>();
+        if(lineRenderer == null) lineRenderer = GetComponent<LineRenderer>();
         lineRenderer.positionCount = lineSegments;
         lineRenderer.endColor = Color.red;
         lineRenderer.startColor = Color.red;
@@ -59,26 +70,7 @@ public class Weapon : MonoBehaviour
         {
             if(weapon is ItemRanged)
             {
-                float speed = ((ItemRanged)weapon).projectileSpeed;
-
-                Vector3 velocity = transform.forward * speed * Time.fixedDeltaTime * -1f;
-                Vector3 oldPos = transform.position;
-                Vector3 newPos;
-
-                Vector3 grav = Physics.gravity * Time.fixedDeltaTime * .1f;
-
-
-                for (int i = 0; i < lineSegments; i++)
-                {
-                    newPos = oldPos + velocity;
-                    velocity += grav;
-
-
-                    Debug.DrawRay(oldPos, velocity, Color.red, Time.fixedDeltaTime);
-                    lineRenderer.SetPosition(i, newPos);
-                    
-                    oldPos = newPos;
-                }
+                DrawProjectileTrajectory();
             }
         }
     }
@@ -106,11 +98,12 @@ public class Weapon : MonoBehaviour
             {
                 Weapon weapon = other.GetComponent<Weapon>();
                 weapon.GetBlocked();
+                attributes.DamageStamina(weapon.damage);
             }
         }
     }
 
-    public void SetItemWeapon(ItemWeapon weapon) 
+    public virtual void SetItemWeapon(ItemWeapon weapon, AttributesController attributes) 
     { 
         this.weapon = weapon; 
         type = weapon.damageType; 
@@ -118,6 +111,7 @@ public class Weapon : MonoBehaviour
         {
             hitSound = weapon.hitSound;
         }
+        this.attributes = attributes;
 
         if(weapon is ItemRanged)
         {
@@ -128,9 +122,11 @@ public class Weapon : MonoBehaviour
     public DamageData GetDamage()
     {
         float blunt = 0f;
-        if (player != null) blunt = player.attributes.GetWeaponSkill(Skill.Blunt);
+        if (player != null) blunt = player.attributes.GetSkill(Skill.Blunt);
         float stagger = (weapon.weight * AttributesCalculator.WEPWGTSTGRFCTR) + (blunt / AttributesCalculator.BLUNTSKILLSTAGGERDIVISOR);
-        return new DamageData(damage, type, stagger);
+        //return new DamageData(damage, type, stagger);
+        if(isAI) return new DamageData(character.transform, damage, type, stagger);
+        else return new DamageData(player.transform, damage, type, stagger);
     }
 
     public void SetAimSegments(int segments)
@@ -145,7 +141,7 @@ public class Weapon : MonoBehaviour
 
         GameObject go = Instantiate(projectile, transform.position, shootDir);
 
-        go.GetComponent<Projectile>().SetProjectile(weapon.damage, type, -transform.forward, ((ItemRanged)weapon).projectileSpeed);
+        go.GetComponent<Projectile>().SetProjectile(player.transform, weapon.damage, type, -transform.forward, ((ItemRanged)weapon).projectileSpeed);
     }
 
     public void ShootWeaponAt(Vector3 position)
@@ -154,7 +150,7 @@ public class Weapon : MonoBehaviour
 
         GameObject go = Instantiate(projectile, transform.position, Quaternion.identity);
 
-        go.GetComponent<Projectile>().SetProjectile(weapon.damage, type, direction, ((ItemRanged)weapon).projectileSpeed);
+        go.GetComponent<Projectile>().SetProjectile(character.transform, weapon.damage, type, direction, ((ItemRanged)weapon).projectileSpeed);
     }
 
 
@@ -193,4 +189,28 @@ public class Weapon : MonoBehaviour
         }
     }
     public void FinishAttack() { isAttacking = false;  }
+
+    public void DrawProjectileTrajectory()
+    {
+        float speed = ((ItemRanged)weapon).projectileSpeed;
+
+        Vector3 velocity = transform.forward * speed * Time.fixedDeltaTime * -1f;
+        Vector3 oldPos = transform.position;
+        Vector3 newPos;
+
+        Vector3 grav = Physics.gravity * Time.fixedDeltaTime * .1f;
+
+
+        for (int i = 0; i < lineSegments; i++)
+        {
+            newPos = oldPos + velocity;
+            velocity += grav;
+
+
+            Debug.DrawRay(oldPos, velocity, Color.red, Time.fixedDeltaTime);
+            lineRenderer.SetPosition(i, newPos);
+
+            oldPos = newPos;
+        }
+    }
 }

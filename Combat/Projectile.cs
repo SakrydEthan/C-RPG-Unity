@@ -9,6 +9,7 @@ public class Projectile : MonoBehaviour
     [SerializeField] float damage;
     [SerializeField] DamageType type;
     [SerializeField] float speed;
+    [SerializeField] Transform source;
     DamageData dd;
     Vector3 velocity;
     Vector3 oldPos;
@@ -22,7 +23,7 @@ public class Projectile : MonoBehaviour
     void Start()
     {
         Destroy(gameObject, 60f);
-        SetProjectile(5f, DamageType.Pierce, transform.rotation);
+        //SetProjectile(5f, DamageType.Pierce, transform.rotation);
     }
 
     // Update is called once per frame
@@ -41,10 +42,18 @@ public class Projectile : MonoBehaviour
         if (Physics.Raycast(oldPos, transform.forward, out hit, dist, layers, QueryTriggerInteraction.Ignore))
         {
             Debug.DrawRay(transform.position, transform.TransformDirection(Vector3.forward) * hit.distance, Color.yellow, 12f);
-            Debug.Log("Did Hit");
+            Debug.Log("Hit: "+hit.transform.name);
             if(hit.collider.GetComponent<Health>())
             {
                 hit.collider.GetComponent<Health>().Damage(dd);
+                if(hit.collider.GetComponent<Health>() is BodyPartGO)
+                {
+                    hit.collider.GetComponent<BodyPartGO>().GetAttacked(source);
+                }
+            }
+            if(hit.collider.GetComponent<BaseCharacter>())
+            {
+                hit.collider.GetComponent<BaseCharacter>().GetAttacked(source);
             }
 
             HitTarget(hit.transform, hit.point);
@@ -67,23 +76,24 @@ public class Projectile : MonoBehaviour
     }
 
 
-    public void SetProjectile(float damage, DamageType type)
+    public void SetProjectile(Transform source, float damage, DamageType type)
     {
-        dd = new DamageData(damage, type, damage);
+        dd = new DamageData(source, damage, type, damage);
 
-
+        this.source = source;
         oldPos = transform.position;
         velocity = transform.forward * speed * Time.fixedDeltaTime;
         grav = Physics.gravity * Time.fixedDeltaTime * .1f;
     }
 
 
-    public void SetProjectile(float damage, DamageType type, Quaternion direction)
+    public void SetProjectile(Transform source, float damage, DamageType type, Quaternion direction)
     {
-        dd = new DamageData(damage, type, damage);
+        dd = new DamageData(source, damage, type, damage);
 
         transform.rotation = direction;
 
+        this.source = source;
         oldPos = transform.position;
         velocity = transform.forward * speed * Time.fixedDeltaTime;
         grav = Physics.gravity * Time.fixedDeltaTime * .1f;
@@ -91,12 +101,13 @@ public class Projectile : MonoBehaviour
 
 
 
-    public void SetProjectile(float _damage, DamageType _type, Vector3 direction, float _speed)
+    public void SetProjectile(Transform _source, float _damage, DamageType _type, Vector3 direction, float _speed)
     {
-        dd = new DamageData(_damage, _type, _damage);
+        dd = new DamageData(_source, _damage, _type, _damage);
 
         transform.forward = direction.normalized;
 
+        this.source = _source;
         oldPos = transform.position;
         velocity = transform.forward * _speed * Time.fixedDeltaTime;
         grav = Physics.gravity * Time.fixedDeltaTime * .1f;
