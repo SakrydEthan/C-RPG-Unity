@@ -1,8 +1,9 @@
 ﻿
-
-[System.Serializable]
-public class SkillBonus
+namespace Assets.Scripts.Attributes
 {
-    public Skill skill;
-    public int amount;
+    [System.Serializable]
+    public class SkillBonus : StatBonus
+    {
+        public Skill skill;
+    }
 }

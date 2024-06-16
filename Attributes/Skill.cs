@@ -3,5 +3,9 @@ public enum Skill
     Shield,
     Blunt,
     Sharp,
-    Ranged
+    Ranged,
+    Stealth,
+    Alchemy,
+    Speech,
+    UNASSIGNED
 }

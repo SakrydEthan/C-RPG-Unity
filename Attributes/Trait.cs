@@ -1,25 +1,35 @@
 ﻿using System;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "Trait", menuName = "Create New/Trait")]
-public class Trait : ScriptableObject
+
+namespace Assets.Scripts.Attributes
 {
-    [SerializeField] string traitName;
-    [SerializeField] SkillBonus[] skills;
-    [SerializeField] string description = "";
-
-    public SkillBonus[] GetSkills()
+    [CreateAssetMenu(fileName = "Trait", menuName = "Create New/Trait")]
+    public class Trait : ScriptableObject
     {
-        return skills;
-    }
+        [SerializeField] string traitName;
+        [SerializeField] SkillBonus[] skills;
+        [SerializeField] AttributeBonus[] attributes = new AttributeBonus[(int)Attribute.UNASSIGNED];
+        [SerializeField] string description = "";
 
-    public string GetTraitName()
-    {
-        return traitName;
-    }
+        public SkillBonus[] GetSkills()
+        {
+            return skills;
+        }
 
-    public string GetDescription()
-    {
-        return description;
+        public AttributeBonus[] GetAttributes()
+        {
+            return attributes;
+        }
+
+        public string GetTraitName()
+        {
+            return traitName;
+        }
+
+        public string GetDescription()
+        {
+            return description;
+        }
     }
 }
