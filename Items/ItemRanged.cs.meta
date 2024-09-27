@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: c4211954848da4aa0b71b7aeb97e7995
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - itemIcon: {instanceID: 0}
+  - model: {instanceID: 0}
+  - hitSound: {instanceID: 0}
+  - animOver: {fileID: 22100000, guid: a83641f640e644f90b56199f508e3331, type: 2}
+  - projectile: {instanceID: 0}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
