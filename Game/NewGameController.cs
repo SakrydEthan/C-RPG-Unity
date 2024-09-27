@@ -91,36 +91,6 @@ public class NewGameController : MonoBehaviour
 
         SaveController.instance.InstantiatePlayer();
         LevelController.LoadLevelByName(instance.startingScene);
-
-        /*
-        instance.playerTraits.Clear();
-        instance.isDoneCustomising = true;
-        for (int i = 0; i < instance.traitCollections.Count; i++)
-        {
-            if (!instance.traitCollections[i].CheckComplete()) instance.isDoneCustomising = false;
-            for (int j = 0; j < instance.traitCollections[i].traits.Count; j++)
-            {
-                instance.playerTraits.Add(instance.traitCollections[i].traits[j]);
-            }
-        }
-        for (int i = 0; i < instance.itemCollections.Count; i++)
-        {
-            if (!instance.itemCollections[i].CheckComplete()) instance.isDoneCustomising = false;
-            for (int j = 0; j < instance.itemCollections[i].items.Count; j++)
-            {
-                instance.playerItems.Add(instance.itemCollections[i].items[j]);
-            }
-        }
-
-
-        if (!instance.isDoneCustomising)
-        {
-            instance.playerTraits.Clear();
-            instance.playerItems.Clear();
-            return;
-        }
-        LevelController.StartNewGame(instance.startingScene);
-        */
     }
 
     public static void AddTrait(Trait trait)

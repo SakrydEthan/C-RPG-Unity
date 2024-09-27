@@ -132,40 +132,6 @@ public class PlayerCombatController : MonoBehaviour, ICombatant
         if (hasLeftWeapon && leftItemWeapon.overrideController != null) animator.runtimeAnimatorController = leftItemWeapon.overrideController;
         else if (hasRightWeapon && rightItemWeapon.overrideController != null) animator.runtimeAnimatorController = rightItemWeapon.overrideController;
         else { animator.runtimeAnimatorController = baseAnimator; }
-
-        /*
-        if(_weapon.overrideController != null) { animator.runtimeAnimatorController = _weapon.overrideController; }
-        else { animator.runtimeAnimatorController = baseAnimator; }
-        //if(_weapon is ItemRanged) animator.runtimeAnimatorController = ((ItemRanged)_weapon).animOver;
-        //if(!(_weapon is ItemRanged)) animator.runtimeAnimatorController = baseAnimator;
-
-        activeItemWeapon = _weapon;
-        if(weaponGO != null) Destroy(weaponGO);
-        Debug.Log("Player equipped weapon: " + _weapon.itemName);
-        //damage = attributes.GetWeaponDamage(_weapon);
-
-        if(_weapon.isRightHanded) weaponGO = Instantiate(_weapon.model, rightHand);
-        if(!_weapon.isRightHanded) weaponGO = Instantiate(_weapon.model, leftHand);
-        weaponGO.transform.localPosition = _weapon.offset;
-        //weaponGO.transform.localRotation.SetEulerRotation(-90f, 0f, 0f);
-        weaponGO.transform.Rotate(_weapon.rotation, Space.Self);
-
-        if (weaponGO.GetComponent<Weapon>() == null)
-        {
-            Weapon _wep = weaponGO.AddComponent<Weapon>();
-            _wep.SetItemWeapon(_weapon);
-            activeWeapon = _wep;
-            activeWeapon.attacker = gameObject.transform;
-            activeWeapon.damage = attributes.GetWeaponDamage(_weapon);
-            activeWeapon.SetAimSegments(attributes.GetSkill(Skill.Ranged));
-        }
-        else
-        {
-            activeWeapon = weaponGO.GetComponent<Weapon>();
-            activeWeapon.damage = attributes.GetWeaponDamage(_weapon);
-            activeWeapon.SetAimSegments(attributes.GetSkill(Skill.Ranged));
-        }
-        */
     }
 
     public GameObject CreateWeaponGO(ItemWeapon _weapon, Transform parent)
@@ -173,13 +139,6 @@ public class PlayerCombatController : MonoBehaviour, ICombatant
         GameObject weaponGO = Instantiate(_weapon.model, parent);
         weaponGO.transform.localPosition = _weapon.offset;
         weaponGO.transform.Rotate(_weapon.rotation, Space.Self); 
-        /*
-        if (weaponGO.GetComponent<Weapon>() == null)
-        {
-            Weapon _wep = weaponGO.AddComponent<Weapon>();
-            _wep.SetItemWeapon(_weapon);
-        }
-        */
 
         return weaponGO;
     }

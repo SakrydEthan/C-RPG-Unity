@@ -131,9 +131,4 @@ public class PlayerInteractionController : MonoBehaviour
         }
         Cursor.lockState = CursorLockMode.Locked;
     }
-
-    #region DialogSystemIntegration
-
-
-    #endregion
 }

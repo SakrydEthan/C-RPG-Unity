@@ -189,21 +189,6 @@ public class UIDialog : UISection
             dialogIndex++;
             //dialogButtons.Add(instantiatedPrefab);
         }
-
-        /*
-        for (int i = 0; i < character.startingDialog.Length; i++)
-        {
-            //TODO convert to using characters dialog field instead of dialogbutton[]
-            GameObject instantiatedPrefab = Instantiate(dialogButton, buttonParent);
-
-            float yPos = -buttonOffsetStart + (-i * buttonMargin);
-            instantiatedPrefab.transform.localPosition = new Vector3(0f, yPos, 0f);
-            instantiatedPrefab.GetComponent<DialogButton>().SetInteraction(character.startingDialog[i]);
-            dialogButtons.Add(instantiatedPrefab);
-            dialogIndex++;
-            //dialogButtons.Add(instantiatedPrefab);
-        }
-        */
     }
 
     public void GenerateQuestButtons()

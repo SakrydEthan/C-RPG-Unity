@@ -64,38 +64,6 @@ public class PlayerAttributesController : AttributesController
         Debug.Log($"Setting Mana bar to {mana}, {maxMana}");
         uiCon.UpdateMana(mana, maxMana);
 
-        /*
-        PlayerSave save = SaveController.GetPlayerSave();
-        if(save != null)
-        {
-            LoadSavedFactors(save);
-            GetComponent<Health>().SetHP(hp);
-            GetComponent<Health>().SetMaxHP(hp);
-
-            hp = save.hp;
-            Debug.Log($"Setting HP bar to {hp}, {maxHP}");
-            uiCon.UpdateHealth(hp, maxHP);
-            Debug.Log($"Setting Stamina bar to {stamina}, {maxStamina}");
-            uiCon.UpdateStamina(stamina, maxStamina);
-            Debug.Log($"Setting Mana bar to {mana}, {maxMana}");
-            uiCon.UpdateMagica(mana, maxMana);
-        }
-        else
-        {
-            hp = maxHP;
-            GetComponent<Health>().SetHP(maxHP);
-            GetComponent<Health>().SetMaxHP(maxHP);
-            stamina = maxStamina;
-            mana = maxMana;
-            Debug.Log($"Setting HP bar to {hp}, {maxHP}");
-            uiCon.UpdateHealth(hp, maxHP);
-            Debug.Log($"Setting Stamina bar to {stamina}, {maxStamina}");
-            uiCon.UpdateStamina(stamina, maxStamina);
-            Debug.Log($"Setting Mana bar to {mana}, {maxMana}");
-            uiCon.UpdateMagica(mana, maxMana);
-        }
-        */
-
         Debug.Log("updating ui to show player factors");
         if(uiCon == null) uiCon = GetComponent<PlayerUIController>();
 
