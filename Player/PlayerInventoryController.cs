@@ -98,7 +98,6 @@ public class PlayerInventoryController : MonoBehaviour, ISaveable
 
     public void Save()
     {
-        //ES3.Save("LISTFUCKINGRETARD", items, Application.dataPath + SaveController.instance.saveName);
         //Debug.Log("saved inventory: " + save.items);
         /*string plitems = "";
         foreach (Item item in items)

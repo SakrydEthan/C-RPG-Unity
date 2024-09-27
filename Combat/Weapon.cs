@@ -35,7 +35,6 @@ public class Weapon : MonoBehaviour
     void Start()
     {
         if(health == null) health = GetComponentInParent<Health>();
-        //if (character == null) character = GetComponentInParent<BaseCharacter>();
 
         if ((character = GetComponentInParent<BaseCharacter>()) == null)
         {
@@ -59,7 +58,6 @@ public class Weapon : MonoBehaviour
         lineRenderer.startColor = Color.red;
         lineRenderer.startWidth = 0.1f;
         lineRenderer.enabled = false;
-        //damage = weapon.damage;
     }
 
     // Update is called once per frame
@@ -88,7 +86,6 @@ public class Weapon : MonoBehaviour
                     DamageData dd = GetDamage();
                     other.GetComponent<Health>().Damage(dd);
                     source.Play();
-                    //Debug.Log("Weapon hit " + other.name);
                 }
             }
         }
@@ -124,7 +121,6 @@ public class Weapon : MonoBehaviour
         float blunt = 0f;
         if (player != null) blunt = player.attributes.GetSkill(Skill.Blunt);
         float stagger = (weapon.weight * AttributesCalculator.WEPWGTSTGRFCTR) + (blunt / AttributesCalculator.BLUNTSKILLSTAGGERDIVISOR);
-        //return new DamageData(damage, type, stagger);
         if(isAI) return new DamageData(character.transform, damage, type, stagger);
         else return new DamageData(player.transform, damage, type, stagger);
     }
@@ -169,8 +165,6 @@ public class Weapon : MonoBehaviour
     {
         return weapon.skill;
     }
-
-    //public void UpdateWeaponDamage()
 
     public void GetBlocked()
     {
